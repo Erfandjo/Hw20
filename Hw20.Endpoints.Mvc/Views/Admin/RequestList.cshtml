@@ -1,0 +1,61 @@
+﻿@using App.Domain.Core.Hw20.Request.Entities
+@model List<Request>
+
+
+<div class="btn-group" role="group" aria-label="Basic example">
+    <a asp-action="RequestList" asp-route-value = "0" class="btn btn-primary" type="button">All</a>
+    <a asp-action="RequestList" asp-route-value="1" class="btn btn-primary" type="button">Pending</a>
+    <a asp-action="RequestList" asp-route-value="2" class="btn btn-primary" type="button">Accept</a>
+    <a asp-action="RequestList" asp-route-value="3" class="btn btn-primary" type="button">Reject</a>
+    <form method="post" asp-action="RequestList">
+    <div class="form-floating mb-3">
+            <input class=" form-control" asp-route-date  name="date" type="date" placeholder="Date Visit" data-sb-validations="required" />
+            <label for="date">Date Visit</label>
+    </div>
+        <button asp-route-value="4" class="btn btn-primary btn-lg" id="submitButton" type="submit">Date</button>
+    </form>
+</div>
+
+<hr />
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover table-bordered table-sm">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">NationalCode</th>
+                <th scope="col">Phone Number</th>
+                <th scope="col">Address</th>
+                <th scope="col">Date Visit</th>
+                <th scope="col">Date Time Request</th>
+                <th scope="col">Car Company</th>
+                <th scope="col">Car Model</th>
+                <th scope="col">Status</th>
+                <th scope="col">Change Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var request in @Model)
+            {
+                <tr>
+                    <th scope="row">@request.Id</th>
+                    <td>@request.User.NationalCode</td>
+                    <td>@request.User.PhoneNumber</td>
+                    <td>@request.User.Address</td>
+                    <td>@request.DateVisit</td>
+                    <td>@request.RequestAt</td>
+                    <td>@request.Car.CarModel.Company.Name</td>
+                    <td>@request.Car.CarModel.Name</td>
+                    <td>@request.StatusRequest</td>
+                    <td>
+                        <a asp-controller="Admin" asp-action="AcceptRequest" asp-route-id="@request.Id" class="btn btn-success" type="button">Accept</a>
+                        <a asp-controller="Admin" asp-action="RejectRequest" asp-route-id="@request.Id" class="btn btn-danger" type="button">Reject</a>
+                        
+                    </td>
+
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

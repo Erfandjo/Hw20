@@ -1,0 +1,41 @@
+﻿@using App.Domain.Core.Hw20.Company.Entities
+@model List<Company>
+
+
+<div class="container px-5 my-5">
+    <form method="post" asp-action="AddCarModel">
+        <div class="form-floating mb-3">
+            <input class=" form-control" name="name" type="text" placeholder="Name Car" data-sb-validations="required" />
+            <label for="name">Name Car</label>
+        </div>
+
+      
+
+        <div>
+            <div class="form-floating mb-3">
+                <select name="company" class="form-select" id="validationCustom04" required>
+                    <option selected disabled value="">Company</option>
+                    @foreach(var company in Model)
+                    {
+                        <option>@company.Name</option>
+                    }
+                    
+                </select>
+                <div class="invalid-feedback">
+                    Please select a valid state.
+                </div>
+            </div>
+        </div>
+
+
+        <div class="d-grid">
+            <button class="btn btn-primary btn-lg" id="submitButton" type="submit">Submit</button>
+
+        </div>
+
+        <div class="form-floating mb-5">
+            <h1 style="text-align:center" class="text-danger">@ViewBag.ErrorMessage</h1>
+        </div>
+
+    </form>
+</div>
