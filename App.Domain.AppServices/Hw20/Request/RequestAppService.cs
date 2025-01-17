@@ -29,7 +29,7 @@ namespace App.Domain.AppServices.Hw20.Request
         {
             int maxReqFard = Convert.ToInt32(_appsetting["RozMayene:Fard"]);
             int maxReqZoj = Convert.ToInt32(_appsetting["RozMayene:Zoj"]);
-            var lastRequest = _requestService.GetLastRequestForCar(request.CarId);
+            var lastRequest = _requestService.GetLastRequestForCar(request.Car.Id);
             request.RequestAt = DateTime.Now;
             request.StatusRequest = Core.Hw20.Request.Enum.StatusRequestEnum.IsPending;
             if (request.Car.YearOfCar + 5 < DateTime.Now.Year)
