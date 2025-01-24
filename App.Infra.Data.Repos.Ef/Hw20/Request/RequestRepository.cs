@@ -44,7 +44,7 @@ namespace App.Infra.Data.Repos.Ef.Hw20.Request
 
         public int CountRequestOfDay(DateOnly d)
         {
-           return _appDbContext.Requests.Where(x => x.DateVisit.DayOfYear == d.DayOfYear).Count();
+           return _appDbContext.Requests.Where(x => x.DateVisit.DayOfYear == d.DayOfYear && x.StatusRequest == Domain.Core.Hw20.Request.Enum.StatusRequestEnum.Accept).Count();
         }
 
         public List<Domain.Core.Hw20.Request.Entities.Request> GetAccept()

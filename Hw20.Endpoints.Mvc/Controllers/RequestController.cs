@@ -30,47 +30,58 @@ namespace Hw20.Endpoints.Mvc.Controllers
         }
 
 
-        public IActionResult Add(string errorMessage = null)
+        public IActionResult Add(string? errorMessage = null)
         {
+            AddPageResultViewModel model = new();
             ViewBag.errorMessage = errorMessage;
-            var CarModels = _carModelAppService.GetAll();
-            return View(CarModels);
+            return View(model);
         }
 
-        public IActionResult AddRequest(AddRequestViewModel addRequestViewModel)
+
+        [HttpPost]
+        public IActionResult Add(AddPageResultViewModel addPageResultViewModel)
         {
-            Request request = new Request();
-            var carModel = _carModelAppService.GetByName(addRequestViewModel.CarModel);
-            var car = _carAppService.GetByLicensePlate(addRequestViewModel.LicensePlate);
-            request.User = new User()
+            if (ModelState.IsValid)
             {
-                RoleId = 2,
-                NationalCode = addRequestViewModel.NationalCode,
-                Address = addRequestViewModel.Address,
-                PhoneNumber = addRequestViewModel.PhoneNumber,
-            };
-            if(car is not null)
-            {
-                request.Car = car;
+                Request request = new Request();
+                var carModel = _carModelAppService.GetByName(addPageResultViewModel.AddRequestViewModel.CarModel);
+                var car = _carAppService.GetByLicensePlate(addPageResultViewModel.AddRequestViewModel.LicensePlate);
+                request.User = new User()
+                {
+                    RoleId = 2,
+                    NationalCode = addPageResultViewModel.AddRequestViewModel.NationalCode,
+                    Address = addPageResultViewModel.AddRequestViewModel.Address,
+                    PhoneNumber = addPageResultViewModel.AddRequestViewModel.PhoneNumber,
+                };
+                if (car is not null)
+                {
+                    request.Car = car;
+                }
+                else
+                {
+                    request.Car = new Car()
+                    {
+                        LicensePlate = addPageResultViewModel.AddRequestViewModel.LicensePlate,
+                        YearOfCar = addPageResultViewModel.AddRequestViewModel.YearOfCar,
+                        CarModelId = carModel.Id,
+                        CarModel = carModel
+                    };
+                }
+                request.DateVisit = addPageResultViewModel.AddRequestViewModel.DateVisit;
+
+                var result = _requestAppService.Add(request);
+                if (!result.IsSucces)
+                {
+                    addPageResultViewModel.Result = result.Message;
+                    return View(addPageResultViewModel);
+                }
+                return View("Index");
             }
             else
             {
-                request.Car = new Car()
-                {
-                    LicensePlate = addRequestViewModel.LicensePlate,
-                    YearOfCar = addRequestViewModel.YearOfCar,
-                    CarModelId = carModel.Id,
-                    CarModel = carModel
-                };
+                return View(addPageResultViewModel);
             }
-            request.DateVisit = addRequestViewModel.DateVisit;
-
-            var result = _requestAppService.Add(request);
-            if (!result.IsSucces)
-            {
-                return RedirectToAction("Add" , new { errorMessage = result.Message});
-            }
-            return RedirectToAction("Index");
+           
         }
 
     }

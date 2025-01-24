@@ -3,15 +3,15 @@
 
 
 <div class="btn-group" role="group" aria-label="Basic example">
-    <a asp-action="RequestList" asp-route-value = "0" class="btn btn-primary" type="button">All</a>
+    <a asp-action="RequestList" asp-route-value="0" class="btn btn-primary" type="button">All</a>
     <a asp-action="RequestList" asp-route-value="1" class="btn btn-primary" type="button">Pending</a>
     <a asp-action="RequestList" asp-route-value="2" class="btn btn-primary" type="button">Accept</a>
     <a asp-action="RequestList" asp-route-value="3" class="btn btn-primary" type="button">Reject</a>
     <form method="post" asp-action="RequestList">
-    <div class="form-floating mb-3">
-            <input class=" form-control" asp-route-date  name="date" type="date" placeholder="Date Visit" data-sb-validations="required" />
+        <div class="form-floating mb-3">
+            <input class=" form-control" asp-route-date name="date" type="date" placeholder="Date Visit" data-sb-validations="required" />
             <label for="date">Date Visit</label>
-    </div>
+        </div>
         <button asp-route-value="4" class="btn btn-primary btn-lg" id="submitButton" type="submit">Date</button>
     </form>
 </div>
@@ -48,9 +48,26 @@
                     <td>@request.Car.CarModel.Name</td>
                     <td>@request.StatusRequest</td>
                     <td>
-                        <a asp-controller="Admin" asp-action="AcceptRequest" asp-route-id="@request.Id" class="btn btn-success" type="button">Accept</a>
-                        <a asp-controller="Admin" asp-action="RejectRequest" asp-route-id="@request.Id" class="btn btn-danger" type="button">Reject</a>
-                        
+
+
+                        @if (request.StatusRequest == App.Domain.Core.Hw20.Request.Enum.StatusRequestEnum.Accept)
+                        {
+                            <a asp-controller="Admin" asp-action="RejectRequest" asp-route-id="@request.Id" class="btn btn-danger" type="button">Reject</a>
+                        }
+                        else if (request.StatusRequest == App.Domain.Core.Hw20.Request.Enum.StatusRequestEnum.Reject)
+                        {
+                            <a asp-controller="Admin" asp-action="AcceptRequest" asp-route-id="@request.Id" class="btn btn-success" type="button">Accept</a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Admin" asp-action="RejectRequest" asp-route-id="@request.Id" class="btn btn-danger" type="button">Reject</a>
+                            <a asp-controller="Admin" asp-action="AcceptRequest" asp-route-id="@request.Id" class="btn btn-success" type="button">Accept</a>
+                        }
+
+
+
+
+
                     </td>
 
 

@@ -1,65 +1,78 @@
-﻿@using App.Domain.Core.Hw20.CarModel.Entities
-@model List<CarModel>
+﻿@using App.Domain.Core.Hw20.CarModel.AppService
+@using App.Domain.Core.Hw20.CarModel.Entities
+@using Hw20.Endpoints.Mvc.Models.Request
+@model AddPageResultViewModel
+@inject ICarModelAppService car
 
 <div class="container px-5 my-5">
-    <form method="post"  asp-action="AddRequest">
+    <form method="post" asp-controller="Request" asp-action="Add">
         <div class="form-floating mb-3">
-            <input class=" form-control" name="NationalCode" type="text" placeholder="National Code" data-sb-validations="required" required />
-            <label for="NationalCode">National Code</label>
+            <input type="number" class="form-control" asp-for="@Model.AddRequestViewModel.NationalCode" />
+            <label asp-for="@Model.AddRequestViewModel.NationalCode"></label>
+            <span class="text-danger" asp-validation-for="@Model.AddRequestViewModel.NationalCode"></span>
         </div>
 
       
 
         <div>
             <div class="form-floating mb-3">
-                <select name="CarModel" class="form-select" id="validationCustom04" required>
-                    <option selected disabled value="">Car Model</option>
-                    @foreach(var car in Model)
+                <select class="form-control" asp-for="@Model.AddRequestViewModel.CarModel">
+                    <option selected disabled value="">Please Select...</option>
+                    @foreach (var item in car.GetAll())
                     {
-                        <option>@car.Name</option>
+                        <option>@item.Name</option>
                     }
-                    
                 </select>
-                <div class="invalid-feedback">
-                    Please select a valid state.
-                </div>
+                <label asp-for="@Model.AddRequestViewModel.CarModel"></label>
+                <span class="text-danger" asp-validation-for="@Model.AddRequestViewModel.CarModel"></span>
             </div>
         </div>
 
         <div class="form-floating mb-3">
-            <input class=" form-control" name="LicensePlate" type="number" placeholder="License Plate" data-sb-validations="required" required />
-            <label for="LicensePlate">License Plate</label>
+            <input type="number" class="form-control" asp-for="@Model.AddRequestViewModel.LicensePlate" />
+            <label asp-for="@Model.AddRequestViewModel.LicensePlate"></label>
+            <span class="text-danger" asp-validation-for="@Model.AddRequestViewModel.LicensePlate"></span>
         </div>
 
         <div class="form-floating mb-3">
-            <input class=" form-control" name="YearOfCar" type="number" placeholder="Year Of Car" data-sb-validations="required" required />
-            <label for="YearOfCar">Year Of Car</label>
+            <input class="form-control" asp-for="@Model.AddRequestViewModel.YearOfCar" />
+            <label asp-for="@Model.AddRequestViewModel.YearOfCar"></label>
+            <span class="text-danger" asp-validation-for="@Model.AddRequestViewModel.YearOfCar"></span>
         </div>
 
         <div class="form-floating mb-3">
-            <input class=" form-control" name="DateVisit" type="date" placeholder="Date Visit" data-sb-validations="required" />
-            <label for="DateVisit">Date Visit</label>
+            <input class="form-control" asp-for="@Model.AddRequestViewModel.DateVisit" />
+            <label asp-for="@Model.AddRequestViewModel.DateVisit"></label>
+            <span class="text-danger" asp-validation-for="@Model.AddRequestViewModel.DateVisit"></span>
+        </div>
+
+        <div class="form-floating mb-3">     
+            <input type="number" class="form-control" asp-for="@Model.AddRequestViewModel.PhoneNumber" />
+            <label asp-for="@Model.AddRequestViewModel.PhoneNumber"></label>
+            <span class="text-danger" asp-validation-for="@Model.AddRequestViewModel.PhoneNumber"></span>
         </div>
 
         <div class="form-floating mb-3">
-            <input maxlength="10" class=" form-control" name="PhoneNumber" type="number" placeholder="PhoneNumber" data-sb-validations="required" required />
-            <label for="PhoneNumber">Phone Number</label>
-        </div>
-
-        <div class="form-floating mb-3">
-            <input class=" form-control" name="Address" type="text" placeholder="Address" data-sb-validations="required" required="سذسیذلبذ" />
-            <label for="Address">Address</label>
+            <input class="form-control" asp-for="@Model.AddRequestViewModel.Address" />
+            <label asp-for="@Model.AddRequestViewModel.Address"></label>
+            <span class="text-danger" asp-validation-for="@Model.AddRequestViewModel.Address"></span>
         </div>
 
         <div class="d-grid">
-            <button class="btn btn-primary btn-lg" id="submitButton" type="submit">Submit</button>
+            <button class="btn btn-primary btn-lg" type="submit">Submit</button>
 
         </div>
 
         
         <div class ="form-floating mb-5">
-            <h1 style="text-align:center" class="text-danger">@ViewBag.ErrorMessage</h1>
+            <h1 style="text-align:center" class="text-danger">@Model.Result</h1>
        </div>
 
     </form>
 </div>
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}
