@@ -13,11 +13,11 @@ namespace App.Infra.Data.Repos.Ef.Hw20.Car
             _appDbContext = appDbContext;
         }
 
-        public Domain.Core.Hw20.Car.Entities.Car GetByLicensePlate(string licensePlate)
+        public async Task<Domain.Core.Hw20.Car.Entities.Car> GetByLicensePlate(string licensePlate, CancellationToken cancellation)
         {
-           return _appDbContext.Cars.Include(x => x.CarModel)
+           return await _appDbContext.Cars.AsNoTracking().Include(x => x.CarModel)
                 .Include(x => x.CarModel.Company)
-                .FirstOrDefault(x => x.LicensePlate == licensePlate);
+                .FirstOrDefaultAsync(x => x.LicensePlate == licensePlate);
         }
     }
 }

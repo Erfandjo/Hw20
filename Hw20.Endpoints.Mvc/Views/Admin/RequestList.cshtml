@@ -50,15 +50,12 @@
                     <td>
 
 
-                        @if (request.StatusRequest == App.Domain.Core.Hw20.Request.Enum.StatusRequestEnum.Accept)
-                        {
-                            <a asp-controller="Admin" asp-action="RejectRequest" asp-route-id="@request.Id" class="btn btn-danger" type="button">Reject</a>
-                        }
-                        else if (request.StatusRequest == App.Domain.Core.Hw20.Request.Enum.StatusRequestEnum.Reject)
+                        
+                         @if (request.StatusRequest == App.Domain.Core.Hw20.Request.Enum.StatusRequestEnum.Reject)
                         {
                             <a asp-controller="Admin" asp-action="AcceptRequest" asp-route-id="@request.Id" class="btn btn-success" type="button">Accept</a>
                         }
-                        else
+                        else if (request.StatusRequest == App.Domain.Core.Hw20.Request.Enum.StatusRequestEnum.IsPending)
                         {
                             <a asp-controller="Admin" asp-action="RejectRequest" asp-route-id="@request.Id" class="btn btn-danger" type="button">Reject</a>
                             <a asp-controller="Admin" asp-action="AcceptRequest" asp-route-id="@request.Id" class="btn btn-success" type="button">Accept</a>

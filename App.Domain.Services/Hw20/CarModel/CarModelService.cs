@@ -1,6 +1,7 @@
 ﻿using App.Domain.Core.Hw20.CarModel.Data;
 using App.Domain.Core.Hw20.CarModel.Service;
 using App.Domain.Core.Hw20.Result;
+using App.Infra.Data.Repos.Ef.Hw20.CarModel;
 
 namespace App.Domain.Services.Hw20.CarModel
 {
@@ -13,34 +14,39 @@ namespace App.Domain.Services.Hw20.CarModel
             _carModelRepository = carModelRepository;
         }
 
-        public Result Add(Core.Hw20.CarModel.Entities.CarModel carModel)
+        public async Task<Result> Add(Core.Hw20.CarModel.Entities.CarModel carModel , CancellationToken cancellation)
         {
-            return _carModelRepository.Add(carModel);
+            return await _carModelRepository.Add(carModel, cancellation);
         }
 
-        public Result Delete(int id)
+        public async Task<Result> Delete(int id , CancellationToken cancellationToken)
         {
-            return _carModelRepository.Delete(id);
+            return await _carModelRepository.Delete(id , cancellationToken);
         }
 
-        public List<Core.Hw20.CarModel.Entities.CarModel> GetAll()
+        public async Task<List<CarModelDto>> GetAll(CancellationToken cancellationToken)
         {
-            return _carModelRepository.GetAll();
+            return await _carModelRepository.GetAll(cancellationToken);
         }
 
-        public Core.Hw20.CarModel.Entities.CarModel GetById(int id)
+        public async Task<CarModelDto> GetDtoById(int id , CancellationToken cancellation)
         {
-            return _carModelRepository.GetById(id);
+            return await _carModelRepository.GetDtoById(id , cancellation);
         }
 
-        public Core.Hw20.CarModel.Entities.CarModel GetByName(string str)
+        public async Task<Core.Hw20.CarModel.Entities.CarModel> GetByName(string str , CancellationToken cancellationToken)
         {
-           return _carModelRepository.GetByName(str);
+           return await _carModelRepository.GetByName(str , cancellationToken);
         }
 
-        public Result Update(int id, string name, Core.Hw20.Company.Entities.Company company)
+        public async Task<Result> Update(int id, string name, Core.Hw20.Company.Entities.Company company , CancellationToken cancellation)
         {
-           return _carModelRepository.Update(id, name, company);
+           return await _carModelRepository.Update(id, name, company , cancellation);
+        }
+
+        public async Task<Core.Hw20.CarModel.Entities.CarModel> GetById(int id , CancellationToken cancellation)
+        {
+            return await _carModelRepository.GetById(id , cancellation);
         }
     }
 }

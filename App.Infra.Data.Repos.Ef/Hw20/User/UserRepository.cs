@@ -1,5 +1,6 @@
 ﻿using App.Domain.Core.Hw20.User.Data;
 using App.Infra.Data.Db.SqlServer.Ef.DbContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace App.Infra.Data.Repos.Ef.Hw20.User
 {
@@ -12,14 +13,16 @@ namespace App.Infra.Data.Repos.Ef.Hw20.User
             _dbContext = dbContext;
         }
 
-        public Domain.Core.Hw20.User.Entities.User GetByNationalCode(string nationalCode)
+        public async Task<Domain.Core.Hw20.User.Entities.User> GetByNationalCode(string nationalCode , CancellationToken cancellationToken)
         {
-            return _dbContext.Users.FirstOrDefault(x => x.NationalCode == nationalCode && x.RoleId == 1);
+            return await _dbContext.Users.FirstOrDefaultAsync(x => x.NationalCode == nationalCode && x.RoleId == 1);
         }
 
-        public bool Login(string phoneNumber, string nationalCode)
+        public async Task<bool> Login(string phoneNumber, string nationalCode , CancellationToken cancellationToken)
         {
-            return _dbContext.Users.Any(x => x.PhoneNumber == phoneNumber && x.NationalCode == nationalCode && x.RoleId == 1);
+            return await _dbContext.Users
+                .AsNoTracking()
+                .AnyAsync(x => x.PhoneNumber == phoneNumber && x.NationalCode == nationalCode && x.RoleId == 1);
         }
     }
 }

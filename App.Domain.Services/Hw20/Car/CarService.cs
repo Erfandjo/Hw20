@@ -12,9 +12,9 @@ namespace App.Domain.Services.Hw20.Car
             _carRepository = carRepository;
         }
 
-        public Core.Hw20.Car.Entities.Car GetByLicensePlate(string licensePlate)
+        public async Task<Core.Hw20.Car.Entities.Car> GetByLicensePlate(string licensePlate , CancellationToken cancellation)
         {
-          return _carRepository.GetByLicensePlate(licensePlate);
+          return await _carRepository.GetByLicensePlate(licensePlate , cancellation);
         }
     }
 }

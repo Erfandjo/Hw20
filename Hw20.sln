@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hw20.Endpoints.Mvc", "Hw20.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Infra.Data.Db.Storage.Memory", "App.Infra.Data.Db.Storage.Memory\App.Infra.Data.Db.Storage.Memory.csproj", "{2F6B58E2-C57A-4824-AD3C-42BC7216DFF1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hw20.Endpoints.Api", "Hw20.Endpoints.Api\Hw20.Endpoints.Api.csproj", "{97500554-71E7-4D95-924C-68DF0B5C1245}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{2F6B58E2-C57A-4824-AD3C-42BC7216DFF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F6B58E2-C57A-4824-AD3C-42BC7216DFF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F6B58E2-C57A-4824-AD3C-42BC7216DFF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97500554-71E7-4D95-924C-68DF0B5C1245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97500554-71E7-4D95-924C-68DF0B5C1245}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97500554-71E7-4D95-924C-68DF0B5C1245}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97500554-71E7-4D95-924C-68DF0B5C1245}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,5 +92,6 @@ Global
 		{72D01E5F-134F-435E-BBCD-6699F18CA498} = {6E9FEAAA-F372-4086-8449-D9BF5AD00940}
 		{70B5D455-FF99-4B6D-9112-C362DFEF33ED} = {4BD2A4F7-962A-4106-9B11-00EDF7DE9BD9}
 		{2F6B58E2-C57A-4824-AD3C-42BC7216DFF1} = {1A18BA25-5DFB-42B8-84A0-178C08155D0E}
+		{97500554-71E7-4D95-924C-68DF0B5C1245} = {4BD2A4F7-962A-4106-9B11-00EDF7DE9BD9}
 	EndGlobalSection
 EndGlobal

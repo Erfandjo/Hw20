@@ -2,7 +2,7 @@
 {
     public interface IUserAppService
     {
-        public bool Login(string phoneNumber, string nationalCode);
+        public Task<bool> Login(string phoneNumber, string nationalCode , CancellationToken cancellation);
         
     }
 }

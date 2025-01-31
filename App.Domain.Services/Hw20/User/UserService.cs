@@ -12,14 +12,14 @@ namespace App.Domain.Services.Hw20.User
             _userRepository = userRepository;
         }
 
-        public Core.Hw20.User.Entities.User GetByNationalCode(string nationalCode)
+        public async Task<Core.Hw20.User.Entities.User> GetByNationalCode(string nationalCode , CancellationToken cancellation)
         {
-            return _userRepository.GetByNationalCode(nationalCode);
+            return await _userRepository.GetByNationalCode(nationalCode , cancellation);
         }
 
-        public bool Login(string phoneNumber, string nationalCode)
+        public async Task<bool> Login(string phoneNumber, string nationalCode , CancellationToken cancellationToken)
         {
-           return _userRepository.Login(phoneNumber, nationalCode);
+           return await _userRepository.Login(phoneNumber, nationalCode , cancellationToken);
         }
     }
 }

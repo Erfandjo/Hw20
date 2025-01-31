@@ -13,54 +13,54 @@ namespace App.Domain.Services.Hw20.Request
             _requestRepository = requestRepository;
         }
 
-        public Result AcceptRequest(int id)
+        public async Task<Result> AcceptRequest(int id , CancellationToken cancellation)
         {
-           return _requestRepository.AcceptRequest(id);
+           return await _requestRepository.AcceptRequest(id , cancellation);
         }
 
-        public Result Add(Core.Hw20.Request.Entities.Request request)
+        public async Task<Result> Add(Core.Hw20.Request.Entities.Request request, CancellationToken cancellation)
         {
-            return _requestRepository.Add(request);
+            return await _requestRepository.Add(request , cancellation);
         }
 
-        public int CountRequestOfDay(DateOnly d)
+        public async Task<int> CountRequestOfDay(DateOnly d, CancellationToken cancellation)
         {
-            return _requestRepository.CountRequestOfDay(d);
+            return await _requestRepository.CountRequestOfDay(d, cancellation);
         }
 
-        public List<Core.Hw20.Request.Entities.Request> GetAccept()
+        public async Task<List<Core.Hw20.Request.Entities.Request>> GetAccept(CancellationToken cancellation)
         {
-           return _requestRepository.GetAccept();
+           return await _requestRepository.GetAccept(cancellation);
         }
 
-        public List<Core.Hw20.Request.Entities.Request> GetAll()
+        public async Task<List<Core.Hw20.Request.Entities.Request>> GetAll(CancellationToken cancellation)
         {
-           return _requestRepository.GetAll();
+           return await _requestRepository.GetAll(cancellation);
         }
 
-        public List<Core.Hw20.Request.Entities.Request> GetByDate(DateOnly date)
+        public async Task<List<Core.Hw20.Request.Entities.Request>> GetByDate(DateOnly date, CancellationToken cancellation)
         {
-            return _requestRepository.GetByDate(date);
+            return await _requestRepository.GetByDate(date, cancellation    );
         }
 
-        public Core.Hw20.Request.Entities.Request GetLastRequestForCar(int carId)
+        public async Task<Core.Hw20.Request.Entities.Request> GetLastRequestForCar(int carId, CancellationToken cancellation)
         {
-            return _requestRepository.GetLastRequestForCar(carId);
+            return await _requestRepository.GetLastRequestForCar(carId, cancellation    );
         }
 
-        public List<Core.Hw20.Request.Entities.Request> GetPending()
+        public async Task<List<Core.Hw20.Request.Entities.Request>> GetPending(CancellationToken cancellation)
         {
-            return _requestRepository.GetPending();
+            return await _requestRepository.GetPending(cancellation);
         }
 
-        public List<Core.Hw20.Request.Entities.Request> GetReject()
+        public async Task<List<Core.Hw20.Request.Entities.Request>> GetReject(CancellationToken cancellation)
         {
-            return _requestRepository.GetReject();
+            return await _requestRepository.GetReject(cancellation);
         }
 
-        public Result RejectRequest(int id)
+        public async Task<Result> RejectRequest(int id, CancellationToken cancellation)
         {
-            return _requestRepository.RejectRequest(id);
+            return await _requestRepository.RejectRequest(id    , cancellation);
         }
     }
 }

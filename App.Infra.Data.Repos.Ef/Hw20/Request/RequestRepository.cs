@@ -14,25 +14,27 @@ namespace App.Infra.Data.Repos.Ef.Hw20.Request
             _appDbContext = appDbContext;
         }
 
-        public Result AcceptRequest(int id)
+        public async Task<Result> AcceptRequest(int id, CancellationToken cancellation)
         {
-            var item =_appDbContext.Requests.FirstOrDefault(x => x.Id == id);
+            var item = await _appDbContext.Requests.FirstOrDefaultAsync(x => x.Id == id);
             if(item is not null)
             {
                 item.StatusRequest = Domain.Core.Hw20.Request.Enum.StatusRequestEnum.Accept;
-                _appDbContext.SaveChanges();
+               await _appDbContext.SaveChangesAsync();
                 return new Result(true, "Success");
             }
             return new Result(false, "Not Found Item");
         }
 
-        public Result Add(Domain.Core.Hw20.Request.Entities.Request request)
+        public async Task<Result> Add(Domain.Core.Hw20.Request.Entities.Request request, CancellationToken cancellation)
         {
+            request.Car.CarModel = null;
+            
             Result result = new Result(true , "Success");
             if (request != null)
             {
-                _appDbContext.Add(request);
-                _appDbContext.SaveChanges();
+               await _appDbContext.AddAsync(request);
+               _appDbContext.SaveChanges();
                 return result;
             }
 
@@ -42,49 +44,84 @@ namespace App.Infra.Data.Repos.Ef.Hw20.Request
             
         }
 
-        public int CountRequestOfDay(DateOnly d)
+        public async Task<int> CountRequestOfDay(DateOnly d, CancellationToken cancellation)
         {
-           return _appDbContext.Requests.Where(x => x.DateVisit.DayOfYear == d.DayOfYear && x.StatusRequest == Domain.Core.Hw20.Request.Enum.StatusRequestEnum.Accept).Count();
+           return await _appDbContext.Requests
+                .AsNoTracking()
+                .Where(x => x.DateVisit.Year == d.Year && x.DateVisit.DayOfYear == d.DayOfYear && x.StatusRequest == Domain.Core.Hw20.Request.Enum.StatusRequestEnum.Accept)
+                .CountAsync();
         }
 
-        public List<Domain.Core.Hw20.Request.Entities.Request> GetAccept()
+        public async Task<List<Domain.Core.Hw20.Request.Entities.Request>> GetAccept(CancellationToken cancellation)
         {
-            return _appDbContext.Requests.Include(x => x.Car).Include(x => x.Car.CarModel.Company).Include(x => x.User).Where(x =>  x.StatusRequest == Domain.Core.Hw20.Request.Enum.StatusRequestEnum.Accept).ToList();
+            return await _appDbContext.Requests
+                .AsNoTracking()
+                .Include(x => x.Car)
+                .Include(x => x.Car.CarModel.Company)
+                .Include(x => x.User)
+                .Where(x =>  x.StatusRequest == Domain.Core.Hw20.Request.Enum.StatusRequestEnum.Accept)
+                .ToListAsync();
         }
 
-        public List<Domain.Core.Hw20.Request.Entities.Request> GetAll()
+        public async Task<List<Domain.Core.Hw20.Request.Entities.Request>> GetAll(CancellationToken cancellation)
         {
-            return _appDbContext.Requests.Include(x => x.Car).Include(x => x.Car.CarModel.Company).Include(x => x.User).ToList();
+            return await _appDbContext.Requests
+                .AsNoTracking()
+                .Include(x => x.Car)
+                .Include(x => x.Car.CarModel.Company)
+                .Include(x => x.User)
+                .ToListAsync();
         }
 
-        public List<Domain.Core.Hw20.Request.Entities.Request> GetByDate(DateOnly date)
+        public async Task<List<Domain.Core.Hw20.Request.Entities.Request>> GetByDate(DateOnly date, CancellationToken cancellation)
         {
-            return _appDbContext.Requests.Include(x => x.Car).Include(x => x.Car.CarModel.Company).Include(x => x.User)
-                .Where(x => x.DateVisit == date).ToList();
+            return await _appDbContext.Requests
+                .AsNoTracking()
+                .Include(x => x.Car)
+                .Include(x => x.Car.CarModel.Company)
+                .Include(x => x.User)
+                .Where(x => x.DateVisit == date)
+                .ToListAsync();
         }
 
-        public Domain.Core.Hw20.Request.Entities.Request GetLastRequestForCar(int carId)
+        public async Task<Domain.Core.Hw20.Request.Entities.Request> GetLastRequestForCar(int carId, CancellationToken cancellation)
         {
-            return _appDbContext.Requests.OrderByDescending(x => x.Id).FirstOrDefault(x => x.CarId == carId);
+            return  await _appDbContext.Requests
+                .AsNoTracking()
+                .OrderByDescending(x => x.Id)
+                .FirstOrDefaultAsync(x => x.CarId == carId);
         }
 
-        public List<Domain.Core.Hw20.Request.Entities.Request> GetPending()
+        public async Task<List<Domain.Core.Hw20.Request.Entities.Request>> GetPending(CancellationToken cancellation)
         {
-            return _appDbContext.Requests.Include(x => x.Car).Include(x => x.Car.CarModel.Company).Include(x => x.User).Where(x => x.StatusRequest == Domain.Core.Hw20.Request.Enum.StatusRequestEnum.IsPending).ToList();
+            return await _appDbContext.Requests
+                .AsNoTracking()
+                .Include(x => x.Car)
+                .Include(x => x.Car.CarModel.Company)
+                .Include(x => x.User)
+                .Where(x => x.StatusRequest == Domain.Core.Hw20.Request.Enum.StatusRequestEnum.IsPending)
+                .ToListAsync();
         }
 
-        public List<Domain.Core.Hw20.Request.Entities.Request> GetReject()
+        public async Task<List<Domain.Core.Hw20.Request.Entities.Request>> GetReject(CancellationToken cancellation)
         {
-            return _appDbContext.Requests.Include(x => x.Car).Include(x => x.Car.CarModel.Company).Include(x => x.User).Where(x => x.StatusRequest == Domain.Core.Hw20.Request.Enum.StatusRequestEnum.Reject).ToList();
+            return await _appDbContext.Requests
+                .AsNoTracking()
+                .Include(x => x.Car)
+                .Include(x => x.Car.CarModel.Company)
+                .Include(x => x.User)
+                .Where(x => x.StatusRequest == Domain.Core.Hw20.Request.Enum.StatusRequestEnum.Reject)
+                .ToListAsync();
         }
 
-        public Result RejectRequest(int id)
+        public async Task<Result> RejectRequest(int id, CancellationToken cancellation)
         {
-            var item = _appDbContext.Requests.FirstOrDefault(x => x.Id == id);
+            var item = await _appDbContext.Requests
+                .FirstOrDefaultAsync(x => x.Id == id);
             if (item is not null)
             {
                 item.StatusRequest = Domain.Core.Hw20.Request.Enum.StatusRequestEnum.Reject;
-                _appDbContext.SaveChanges();
+               await _appDbContext.SaveChangesAsync();
                 return new Result(true, "Success");
             }
             return new Result(false, "Not Found Item");

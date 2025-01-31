@@ -14,58 +14,79 @@ namespace App.Infra.Data.Repos.Ef.Hw20.CarModel
             _dbContext = dbContext;
         }
 
-        public Result Add(Domain.Core.Hw20.CarModel.Entities.CarModel carModel)
+        public async Task<Result> Add(Domain.Core.Hw20.CarModel.Entities.CarModel carModel , CancellationToken cancellation)
         {
-            if (carModel != null)
-            {
-                _dbContext.CarModels.Add(carModel);
-                _dbContext.SaveChanges();
+            if (carModel == null)
+                return new Result(false, "Car Model Is Null");
+      
+
+            await _dbContext.CarModels.AddAsync(carModel);
+               await _dbContext.SaveChangesAsync();
                 return new Result(true , "Success");
-            }
-            return new Result(false, "Car Model Is Null");
+            
+            
         }
 
-        public Result Delete(int id)
+        public async Task<Result> Delete(int id, CancellationToken cancellation)
         {
-            var car =_dbContext.CarModels.FirstOrDefault(x => x.Id == id);
+            var car = await _dbContext.CarModels.FirstOrDefaultAsync(x => x.Id == id);
             if (car != null)
             {
                 _dbContext.Remove(car);
-                _dbContext.SaveChanges();
+               await _dbContext.SaveChangesAsync();
                 return new Result(true, "Success");
             }
             return new Result(false, "Not Found");
         }
 
-        public List<Domain.Core.Hw20.CarModel.Entities.CarModel> GetAll()
+        public async Task<List<CarModelDto>> GetAll(CancellationToken cancellation)
         {
-           return _dbContext.CarModels.Include(x => x.Company).ToList();
+            return await _dbContext.CarModels
+                .AsNoTracking()
+                .Include(x => x.Company)
+                .Select(x => new CarModelDto{ Id = x.Id, CompanyId = x.CompanyId, CompanyName = x.Company.Name, Name = x.Name })
+                .ToListAsync();
         }
 
-        public Domain.Core.Hw20.CarModel.Entities.CarModel GetById(int id)
+        public async Task<CarModelDto> GetDtoById(int id, CancellationToken cancellation)
         {
-            return _dbContext.CarModels.Include(x => x.Company).FirstOrDefault(x => x.Id == id);
+            return await _dbContext.CarModels
+                .AsNoTracking()
+                .Include(x => x.Company)
+                .Select(x => new CarModelDto { Id = x.Id, CompanyId = x.CompanyId, CompanyName = x.Company.Name, Name = x.Name })
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Domain.Core.Hw20.CarModel.Entities.CarModel GetByName(string str)
+        public async Task<Domain.Core.Hw20.CarModel.Entities.CarModel> GetByName(string str, CancellationToken cancellation)
         {
-            return _dbContext.CarModels.Include(x => x.Company)
-                .FirstOrDefault(x => x.Name == str)
+            return await _dbContext.CarModels
+                .AsNoTracking()
+                .Include(x => x.Company)
+                .FirstOrDefaultAsync(x => x.Name == str)
                 ;
                 ;
         }
 
-        public Result Update(int id, string name, Domain.Core.Hw20.Company.Entities.Company company)
+        public async Task<Result> Update(int id, string name, Domain.Core.Hw20.Company.Entities.Company company, CancellationToken cancellation)
         {
-            var car = _dbContext.CarModels.FirstOrDefault(x => x.Id == id);
+            var car = await _dbContext.CarModels
+                .FirstOrDefaultAsync(x => x.Id == id);
             if (car != null)
             {
                 car.Name = name;
                 car.Company = company;
-                _dbContext.SaveChanges();
+               await _dbContext.SaveChangesAsync();
                 return new Result(true, "Success");
             }
             return new Result(false, "Not Found");
+        }
+
+        public async Task<Domain.Core.Hw20.CarModel.Entities.CarModel> GetById(int id, CancellationToken cancellation)
+        {
+            return await _dbContext.CarModels
+                .AsNoTracking()
+                .Include(x => x.Company)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

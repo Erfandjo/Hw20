@@ -4,8 +4,8 @@ namespace App.Domain.Core.Hw20.User.Service
 {
     public interface IUserService
     {
-        public bool Login(string phoneNumber, string nationalCode);
-        public User.Entities.User GetByNationalCode(string nationalCode);
+        public Task<bool> Login(string phoneNumber, string nationalCode , CancellationToken cancellation);
+        public Task<User.Entities.User> GetByNationalCode(string nationalCode, CancellationToken cancellation);
 
 
     }

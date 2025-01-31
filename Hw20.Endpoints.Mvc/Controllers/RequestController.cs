@@ -39,13 +39,13 @@ namespace Hw20.Endpoints.Mvc.Controllers
 
 
         [HttpPost]
-        public IActionResult Add(AddPageResultViewModel addPageResultViewModel)
+        public async Task<IActionResult> Add(AddPageResultViewModel addPageResultViewModel , CancellationToken cancellation)
         {
             if (ModelState.IsValid)
             {
                 Request request = new Request();
-                var carModel = _carModelAppService.GetByName(addPageResultViewModel.AddRequestViewModel.CarModel);
-                var car = _carAppService.GetByLicensePlate(addPageResultViewModel.AddRequestViewModel.LicensePlate);
+                var carModel = await _carModelAppService.GetByName(addPageResultViewModel.AddRequestViewModel.CarModel , cancellation);
+                var car = await _carAppService.GetByLicensePlate(addPageResultViewModel.AddRequestViewModel.LicensePlate, cancellation);
                 request.User = new User()
                 {
                     RoleId = 2,
@@ -69,7 +69,7 @@ namespace Hw20.Endpoints.Mvc.Controllers
                 }
                 request.DateVisit = addPageResultViewModel.AddRequestViewModel.DateVisit;
 
-                var result = _requestAppService.Add(request);
+                var result = await _requestAppService.Add(request, cancellation);
                 if (!result.IsSucces)
                 {
                     addPageResultViewModel.Result = result.Message;

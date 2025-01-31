@@ -15,12 +15,12 @@ namespace App.Domain.AppServices.Hw20.User
 
        
 
-        public bool Login(string phoneNumber, string nationalCode)
+        public async Task<bool> Login(string phoneNumber, string nationalCode , CancellationToken cancellation)
         {
-            var result = _userService.Login(phoneNumber, nationalCode);
+            var result = await _userService.Login(phoneNumber, nationalCode , cancellation);
             if (result == true)
             {
-                CurrentUser.OnlineUser = _userService.GetByNationalCode(nationalCode);
+                CurrentUser.OnlineUser = await _userService.GetByNationalCode(nationalCode , cancellation);
             } 
             return result;
         }

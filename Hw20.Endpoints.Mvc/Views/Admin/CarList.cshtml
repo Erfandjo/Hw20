@@ -1,5 +1,6 @@
 ﻿@using App.Domain.Core.Hw20.CarModel.Entities
-@model List<CarModel>
+@using App.Infra.Data.Repos.Ef.Hw20.CarModel
+@model List<CarModelDto>
 
 <a asp-action="AddCarList" class="btn btn-primary" type="button">Add</a>
 <hr />
@@ -20,7 +21,7 @@
                 <tr>
                     <th scope="row">@car.Id</th>
                     <td>@car.Name</td>
-                    <td>@car.Company.Name</td>
+                    <td>@car.CompanyName</td>
                    
                     <td>
                         <a asp-controller="Admin" asp-action="UpdateCarList" asp-route-id="@car.Id" class="btn btn-warning" type="button">Update</a>

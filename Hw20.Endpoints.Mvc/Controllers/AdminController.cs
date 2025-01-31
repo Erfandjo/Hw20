@@ -33,7 +33,7 @@ namespace Hw20.Endpoints.Mvc.Controllers
             return View();
         }
 
-        public IActionResult RequestList(DateOnly date , int? value = 0)
+        public async Task<IActionResult> RequestList(DateOnly date , int? value = 0 , CancellationToken cancellation)
         {
             if (CurrentUser.OnlineUser == null)
                 return RedirectToAction("Login");
@@ -41,56 +41,56 @@ namespace Hw20.Endpoints.Mvc.Controllers
             var request = new List<App.Domain.Core.Hw20.Request.Entities.Request>();
             if (value == 0)
             {
-                request = _requestAppService.GetAll();
+                request = await _requestAppService.GetAll(cancellation);
             } else if (value == 1)
             {
-                request = _requestAppService.GetPending();
+                request = await _requestAppService.GetPending(cancellation);
             } else if (value == 2)
             {
-                request = _requestAppService.GetAccept();
+                request = await _requestAppService.GetAccept(cancellation);
             }
             else if (value == 3)
             {
-                request = _requestAppService.GetReject();
+                request = await _requestAppService.GetReject(cancellation);
             }
             else if (value == 4)
             {
-                request = _requestAppService.GetByDate(date);
+                request = await _requestAppService.GetByDate(date , cancellation);
             }
 
             return View(request);
         }
 
 
-        public IActionResult CarList()
+        public async Task<IActionResult> CarList(CancellationToken cancellation)
         {
             if (CurrentUser.OnlineUser == null)
                 return RedirectToAction("Login");
 
-            var carModels = _carModelAppService.GetAll();
+            var carModels = await _carModelAppService.GetAll(cancellation);
             return View(carModels);
         }
 
-        public IActionResult AddCarList(string errorMessage = null)
+        public async Task<IActionResult> AddCarList(string errorMessage = null , CancellationToken cancellation)
         {
             if (CurrentUser.OnlineUser == null)
                 return RedirectToAction("Login");
 
             ViewBag.errorMessage = errorMessage;
-            var company = _companyAppService.GetAll();
+            var company = await _companyAppService.GetAll(cancellation);
             return View(company);
         }
 
-        public IActionResult AddCarModel(string name, string company)
+        public async Task<IActionResult> AddCarModel(string name, string company , CancellationToken cancellation)
         {
             if (CurrentUser.OnlineUser == null)
                 return RedirectToAction("Login");
 
-            var co = _companyAppService.GetByName(company);
+            var co = await _companyAppService.GetByName(company , cancellation);
             var carModel = new CarModel();
             carModel.Name = name;
             carModel.Company = co;
-            var result = _carModelAppService.Add(carModel);
+            var result = await _carModelAppService.Add(carModel , cancellation);
             if(!result.IsSucces)
             {
                 return RedirectToAction("AddCarList", new { errorMessage = result.Message });
@@ -98,27 +98,27 @@ namespace Hw20.Endpoints.Mvc.Controllers
             return RedirectToAction("CarList");
         }
 
-        public IActionResult UpdateCarList(int id , string errorMessage = null)
+        public async Task<IActionResult> UpdateCarList(int id , string errorMessage = null , CancellationToken cancellation)
         {
             if (CurrentUser.OnlineUser == null)
                 return RedirectToAction("Login");
 
             ViewBag.errorMessage = errorMessage;
-            var carModel = _carModelAppService.GetById(id);
-            var companies = _companyAppService.GetAll();
+            var carModel = await _carModelAppService.GetById(id , cancellation);
+            var companies = await _companyAppService.GetAll(cancellation);
             var viewModel = new UpdateCarModelViewModel();
             viewModel.CarModel = carModel;
             viewModel.Companies = companies;
             return View(viewModel);
         }
 
-        public IActionResult UpdateCarModel(int id , string name , string company)
+        public async Task<IActionResult> UpdateCarModel(int id , string name , string company , CancellationToken cancellation)
         {
             if (CurrentUser.OnlineUser == null)
                 return RedirectToAction("Login");
 
-            var co = _companyAppService.GetByName(company);
-            var result = _carModelAppService.Update(id, name, co);
+            var co = await _companyAppService.GetByName(company , cancellation);
+            var result = await _carModelAppService.Update(id, name, co , cancellation);
             if (!result.IsSucces)
             {
                 return RedirectToAction("UpdateCarList", new { errorMessage = result.Message });
@@ -126,19 +126,19 @@ namespace Hw20.Endpoints.Mvc.Controllers
             return RedirectToAction("CarList");
         }
 
-        public IActionResult PreviewCarList(int id)
+        public async Task<IActionResult> PreviewCarList(int id , CancellationToken cancellation)
         {
             if (CurrentUser.OnlineUser == null)
                 return RedirectToAction("Login");
 
             
-            var carModel = _carModelAppService.GetById(id);
+            var carModel = await _carModelAppService.GetById(id , cancellation);
             return View(carModel);
         }
 
-        public IActionResult LoginUser(string PhoneNumber, string NationalCode)
+        public async Task<IActionResult> LoginUser(string PhoneNumber, string NationalCode, CancellationToken cancellation)
         {
-          var result = _userAppService.Login(PhoneNumber, NationalCode);
+          var result = await _userAppService.Login(PhoneNumber, NationalCode , cancellation);
             if (!result)
             {
                 return RedirectToAction("Login", new { errorMessage = "User Is not Found." });
@@ -146,30 +146,30 @@ namespace Hw20.Endpoints.Mvc.Controllers
             return RedirectToAction("Index" , "Home");
         }
 
-        public IActionResult AcceptRequest(int id)
+        public async Task<IActionResult> AcceptRequest(int id , CancellationToken cancellation)
         {
             if (CurrentUser.OnlineUser == null)
                 return RedirectToAction("Login");
 
-            _requestAppService.AcceptRequest(id);
+           await _requestAppService.AcceptRequest(id, cancellation);
             return RedirectToAction("RequestList");
         }
 
-        public IActionResult RejectRequest(int id)
+        public async Task<IActionResult> RejectRequest(int id, CancellationToken cancellation)
         {
             if (CurrentUser.OnlineUser == null)
                 return RedirectToAction("Login");
 
-            _requestAppService.RejectRequest(id);
+           await _requestAppService.RejectRequest(id, cancellation);
             return RedirectToAction("RequestList");
         }
 
-        public IActionResult DeleteCarModel(int id) 
+        public async Task<IActionResult> DeleteCarModel(int id, CancellationToken cancellation) 
         {
             if (CurrentUser.OnlineUser == null)
                 return RedirectToAction("Login");
 
-            _carModelAppService.Delete(id);
+           await _carModelAppService.Delete(id, cancellation);
             return RedirectToAction("CarList");
         }
 

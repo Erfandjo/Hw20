@@ -2,6 +2,6 @@
 {
     public interface ICarAppService
     {
-        public Car.Entities.Car GetByLicensePlate(string licensePlate);
+        public Task<Car.Entities.Car> GetByLicensePlate(string licensePlate , CancellationToken cancellation);
     }
 }
