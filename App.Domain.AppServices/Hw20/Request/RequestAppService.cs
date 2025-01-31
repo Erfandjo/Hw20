@@ -4,10 +4,11 @@ using App.Domain.Core.Hw20.Request.AppService;
 using App.Domain.Core.Hw20.Request.Service;
 using App.Domain.Core.Hw20.Result;
 using Microsoft.Extensions.Configuration;
+using System.Threading;
 
 namespace App.Domain.AppServices.Hw20.Request
 {
-    public class RequestAppService : IRequestAppService
+    public class RequestAppService :  IRequestAppService
     {
         private readonly IRequestService _requestService;
         private readonly ILogAppService _logAppService;
@@ -20,77 +21,77 @@ namespace App.Domain.AppServices.Hw20.Request
             _appsetting = appsetting;
         }
 
-        public Result AcceptRequest(int id)
+        public async Task<Result> AcceptRequest(int id, CancellationToken cancellationToken)
         {
-          return  _requestService.AcceptRequest(id);
+            return await _requestService.AcceptRequest(id, cancellationToken);
         }
 
-        public Result Add(Core.Hw20.Request.Entities.Request request)
+        public async Task<Result> Add(Core.Hw20.Request.Entities.Request request, CancellationToken cancellationToken)
         {
             int maxReqFard = Convert.ToInt32(_appsetting["RozMayene:Fard"]);
             int maxReqZoj = Convert.ToInt32(_appsetting["RozMayene:Zoj"]);
-            var lastRequest = _requestService.GetLastRequestForCar(request.Car.Id);
+            var lastRequest = await _requestService.GetLastRequestForCar(request.Car.Id, cancellationToken);
             request.RequestAt = DateTime.Now;
             request.StatusRequest = Core.Hw20.Request.Enum.StatusRequestEnum.IsPending;
             if (request.Car.YearOfCar + 5 < DateTime.Now.Year)
             {
                 var log = new Core.Hw20.Log.Entities.Log()
                 {
-                  
-                   User = request.User,
+
+                    User = request.User,
                     Car = request.Car,
                     RequestAt = DateTime.Now,
                     DateVisit = request.DateVisit,
                     StatusRequest = Core.Hw20.Request.Enum.StatusRequestEnum.Reject
                 };
-                _logAppService.Add(log);
+                await _logAppService.Add(log, cancellationToken);
 
                 return new Result(false, "Your car is more than 5 years old");
             }
-                
-            if(WeekOfDay(request.DateVisit) == "fard" && request.Car.CarModel.Company.Name == "IranKhodro")
-            return new Result(false , "You can visit on even days");
+
+            if (WeekOfDay(request.DateVisit) == "fard" && request.Car.CarModel.Company.Name == "IranKhodro")
+                return new Result(false, "You can visit on even days");
             if (WeekOfDay(request.DateVisit) == "zoj" && request.Car.CarModel.Company.Name == "Shaipa")
                 return new Result(false, "You can visit on odd days");
-            if (WeekOfDay(request.DateVisit) == "zoj" && _requestService.CountRequestOfDay(request.DateVisit) > maxReqZoj)
+            if (WeekOfDay(request.DateVisit) == "zoj" && await _requestService.CountRequestOfDay(request.DateVisit, cancellationToken) > maxReqZoj)
                 return new Result(false, "Capacity filled");
-            if (WeekOfDay(request.DateVisit) == "fard" && _requestService.CountRequestOfDay(request.DateVisit) > maxReqFard)
+            if (WeekOfDay(request.DateVisit) == "fard" && await _requestService.CountRequestOfDay(request.DateVisit, cancellationToken) > maxReqFard)
                 return new Result(false, "Capacity filled");
-            if(lastRequest is not null)
-            if (request.DateVisit.Year <= lastRequest.DateVisit.Year + 1 && request.StatusRequest != Core.Hw20.Request.Enum.StatusRequestEnum.Reject)
-                return new Result(false, "You can visit every year");
+            if (lastRequest is not null)
+                if (request.DateVisit.Year <= lastRequest.DateVisit.Year + 1 && request.StatusRequest != Core.Hw20.Request.Enum.StatusRequestEnum.Reject)
+                    return new Result(false, "You can visit every year");
 
-            return _requestService.Add(request);
+            return await _requestService.Add(request, cancellationToken);
         }
 
-        public List<Core.Hw20.Request.Entities.Request> GetAccept()
+        public async Task<List<Core.Hw20.Request.Entities.Request>> GetAccept(CancellationToken cancellationToken)
         {
-            return _requestService.GetAccept();
+            return await _requestService.GetAccept(cancellationToken);
         }
 
-        public List<Core.Hw20.Request.Entities.Request> GetAll()
+        public async Task<List<Core.Hw20.Request.Entities.Request>> GetAll(CancellationToken cancellationToken)
         {
-            return _requestService.GetAll();
+            return await _requestService.GetAll(cancellationToken);
         }
 
-        public List<Core.Hw20.Request.Entities.Request> GetByDate(DateOnly date)
+        public async Task<List<Core.Hw20.Request.Entities.Request>> GetByDate(DateOnly date, CancellationToken cancellationToken)
         {
-            return _requestService.GetByDate(date);
+            return await _requestService.GetByDate(date, cancellationToken);
         }
 
-        public List<Core.Hw20.Request.Entities.Request> GetPending()
+        public async Task<List<Core.Hw20.Request.Entities.Request>> GetPending(CancellationToken cancellationToken)
         {
-            return _requestService.GetPending();
+            return await _requestService.GetPending(cancellationToken);
         }
 
-        public List<Core.Hw20.Request.Entities.Request> GetReject()
+        public async Task<List<Core.Hw20.Request.Entities.Request>> GetReject(CancellationToken cancellationToken)
         {
-            return _requestService.GetReject();
+            return await _requestService.GetReject(cancellationToken);
         }
 
-        public Result RejectRequest(int id)
+        public async Task<Result> RejectRequest(int id, CancellationToken cancellationToken)
         {
-            return _requestService.RejectRequest(id);
+            return await _requestService.RejectRequest(id, cancellationToken);
         }
 
         public string WeekOfDay(DateOnly d)

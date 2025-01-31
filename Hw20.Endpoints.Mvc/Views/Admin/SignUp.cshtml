@@ -1,0 +1,52 @@
+﻿@using Hw20.Endpoints.Mvc.Models.Admin
+@model AccountPageResultViewModel
+<div class="container px-5 my-5">
+    <h1 style="text-align:center; color:blueviolet;">Sign Up</h1>
+</div>
+
+<form method="post" asp-controller="Admin" asp-action="SignUp">
+
+    <div class="form-floating mb-3">
+        <input class="form-control" asp-for="@Model.loginViewModel.Username" />
+        <label asp-for="@Model.loginViewModel.Username"></label>
+        <span class="text-danger" asp-validation-for="@Model.loginViewModel.Username"></span>
+    </div>
+
+    <div class="form-floating mb-3">
+        <input class="form-control" asp-for="@Model.loginViewModel.Password" />
+        <label asp-for="@Model.loginViewModel.Password"></label>
+        <span class="text-danger" asp-validation-for="@Model.loginViewModel.Password"></span>
+    </div>
+
+
+    <div class="d-grid mb-3">
+        <button class="btn btn-primary btn-lg" id="submitButton" type="submit">Submit</button>
+    </div>
+
+
+
+    @if (Model.SignUpResult is not null)
+    {
+        @foreach (var error in Model.SignUpResult.Errors)
+        {
+           
+                <div class="form-floating mb-5">
+                    <h1 style="text-align:center" class="text-danger">@error.Description</h1>
+                </div>
+            
+           
+        }
+    }
+
+</form>
+
+<div style="text-align:center; font-size:16px;">
+    <p>
+        Already have an account ? <a asp-controller="Admin" asp-action="Login"> Login </a>
+    </p>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

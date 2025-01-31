@@ -21,6 +21,7 @@ using App.Domain.Core.Hw20.Request.Data;
 using App.Domain.Core.Hw20.Request.Service;
 using App.Domain.Core.Hw20.User.AppService;
 using App.Domain.Core.Hw20.User.Data;
+using App.Domain.Core.Hw20.User.Entities;
 using App.Domain.Core.Hw20.User.Service;
 using App.Domain.Services.Hw20.Car;
 using App.Domain.Services.Hw20.CarModel;
@@ -35,6 +36,7 @@ using App.Infra.Data.Repos.Ef.Hw20.Company;
 using App.Infra.Data.Repos.Ef.Hw20.Log;
 using App.Infra.Data.Repos.Ef.Hw20.Request;
 using App.Infra.Data.Repos.Ef.Hw20.User;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -63,6 +65,10 @@ builder.Services.AddScoped<ICompanyService , CompanyService>();
 builder.Services.AddScoped<ICompanyAppService , CompanyAppService>();
 
 
+
+builder.Services.AddIdentity<User, IdentityRole<int>>()
+    .AddRoles<IdentityRole<int>>()
+    .AddEntityFrameworkStores<AppDbContext>();
 
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

@@ -3,15 +3,15 @@
     public interface IRequestService
     {
 
-        public Result.Result Add(Request.Entities.Request request);
-        public int CountRequestOfDay(DateOnly d);
-        public Request.Entities.Request GetLastRequestForCar(int carId);
-        public List<Request.Entities.Request> GetAll();
-        public List<Request.Entities.Request> GetAccept();
-        public List<Request.Entities.Request> GetReject();
-        public List<Request.Entities.Request> GetPending();
-        public List<Request.Entities.Request> GetByDate(DateOnly date);
-        public Result.Result AcceptRequest(int id);
-        public Result.Result RejectRequest(int id);
+        public Task<Result.Result> Add(Request.Entities.Request request , CancellationToken cancellation);
+        public Task<int> CountRequestOfDay(DateOnly d , CancellationToken cancellation);
+        public Task<Request.Entities.Request> GetLastRequestForCar(int carId , CancellationToken cancellation);
+        public Task<List<Request.Entities.Request>> GetAll(CancellationToken cancellation);
+        public Task<List<Request.Entities.Request>> GetAccept(CancellationToken cancellation);
+        public Task<List<Request.Entities.Request>> GetReject(CancellationToken cancellation);
+        public Task<List<Request.Entities.Request>> GetPending(CancellationToken cancellation);
+        public Task<List<Request.Entities.Request>> GetByDate(DateOnly date , CancellationToken cancellation);
+        public Task<Result.Result> AcceptRequest(int id , CancellationToken cancellation);
+        public Task<Result.Result> RejectRequest(int id , CancellationToken cancellation);
     }
 }

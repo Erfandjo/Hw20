@@ -9,10 +9,12 @@ using App.Infra.Data.Db.SqlServer.Ef.Configuration.CarModel;
 using App.Infra.Data.Db.SqlServer.Ef.Configuration.Company;
 using App.Infra.Data.Db.SqlServer.Ef.Configuration.Role;
 using App.Infra.Data.Db.SqlServer.Ef.Configuration.User;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 namespace App.Infra.Data.Db.SqlServer.Ef.DbContext
 {
-    public class AppDbContext : Microsoft.EntityFrameworkCore.DbContext
+    public class AppDbContext : IdentityDbContext<User,IdentityRole<int>,int>
     {
         public AppDbContext(DbContextOptions options) : base(options)
         {
@@ -24,7 +26,7 @@ namespace App.Infra.Data.Db.SqlServer.Ef.DbContext
             modelBuilder.ApplyConfiguration(new CarModelConfiguration());
             modelBuilder.ApplyConfiguration(new CompanyConfiguration());
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
-            modelBuilder.ApplyConfiguration(new UserConfiguration());
+         //   modelBuilder.ApplyConfiguration(new UserConfiguration());
             
             base.OnModelCreating(modelBuilder);
         }

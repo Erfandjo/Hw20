@@ -12,14 +12,19 @@ namespace App.Domain.Services.Hw20.Company
             _companyRepository = companyRepository;
         }
 
-        public List<Core.Hw20.Company.Entities.Company> GetAll()
+        public async Task<List<Core.Hw20.Company.Entities.Company>> GetAll(CancellationToken cancellationToken)
         {
-            return _companyRepository.GetAll();
+            return await _companyRepository.GetAll(cancellationToken);
         }
 
-        public Core.Hw20.Company.Entities.Company GetByName(string name)
+        public async Task<Core.Hw20.Company.Entities.Company> GetById(int id , CancellationToken cancellation)
         {
-            return _companyRepository.GetByName(name);
+            return await _companyRepository.GetById(id , cancellation);
+        }
+
+        public async Task<Core.Hw20.Company.Entities.Company> GetByName(string name , CancellationToken cancellationToken)
+        {
+            return await _companyRepository.GetByName(name , cancellationToken);
         }
     }
 }

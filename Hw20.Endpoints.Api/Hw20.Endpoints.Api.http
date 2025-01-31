@@ -1,0 +1,6 @@
+@Hw20.Endpoints.Api_HostAddress = http://localhost:5050
+
+GET {{Hw20.Endpoints.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

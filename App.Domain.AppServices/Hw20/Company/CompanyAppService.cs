@@ -13,14 +13,19 @@ namespace App.Domain.AppServices.Hw20.Company
             _companyService = companyService;
         }
 
-        public List<Core.Hw20.Company.Entities.Company> GetAll()
+        public async Task<List<Core.Hw20.Company.Entities.Company>> GetAll(CancellationToken cancellation)
         {
-            return _companyService.GetAll();
+            return await _companyService.GetAll(cancellation);
         }
 
-        public Core.Hw20.Company.Entities.Company GetByName(string name)
+        public async Task<Core.Hw20.Company.Entities.Company> GetById(int id , CancellationToken cancellation)
         {
-            return _companyService.GetByName(name);
+            return await _companyService.GetById(id, cancellation);
+        }
+
+        public async Task<Core.Hw20.Company.Entities.Company> GetByName(string name , CancellationToken cancellation)
+        {
+            return await _companyService.GetByName(name , cancellation);
         }
     }
 }
