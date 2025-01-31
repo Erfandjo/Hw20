@@ -39,6 +39,8 @@ using App.Infra.Data.Repos.Ef.Hw20.User;
 using Microsoft.EntityFrameworkCore;
 using App.Domain.Core.Hw20.Config;
 using Hw20.Endpoints.Api.Middleware;
+using App.Domain.Core.Hw20.User.Entities;
+using Microsoft.AspNetCore.Identity;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -75,7 +77,9 @@ builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<ICompanyAppService, CompanyAppService>();
 
-
+builder.Services.AddIdentity<User, IdentityRole<int>>()
+    .AddRoles<IdentityRole<int>>()
+    .AddEntityFrameworkStores<AppDbContext>();
 
 
 

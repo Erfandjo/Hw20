@@ -8,10 +8,15 @@ using App.Domain.Core.Hw20.User.AppService;
 using App.Infra.Data.Db.Storage.Memory;
 using Azure.Core;
 using Hw20.Endpoints.Mvc.Models.Admin;
+using Hw20.Endpoints.Mvc.Models.Request;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hw20.Endpoints.Mvc.Controllers
 {
+
+    
     public class AdminController : Controller
     {
         private readonly IUserAppService _userAppService;
@@ -27,16 +32,69 @@ namespace Hw20.Endpoints.Mvc.Controllers
             _companyAppService = companyAppService;
         }
 
-        public IActionResult Login(string errorMessage = null)
+
+        public IActionResult SignUp()
         {
-            ViewBag.errorMessage = errorMessage;
-            return View();
+            AccountPageResultViewModel model = new AccountPageResultViewModel();
+            return View(model);
         }
 
-        public async Task<IActionResult> RequestList(DateOnly date , int? value = 0 , CancellationToken cancellation)
+        [HttpPost]
+        public async Task<IActionResult> SignUp(AccountPageResultViewModel page)
         {
-            if (CurrentUser.OnlineUser == null)
+            
+            if (ModelState.IsValid)
+            {
+                var result = await _userAppService.SignUp(page.loginViewModel.Username, page.loginViewModel.Password);
+                if (!result.Succeeded)
+                {
+                    page.SignUpResult = result;
+                    return View(page);
+                }
                 return RedirectToAction("Login");
+            }
+            else
+            {
+                return View(page);
+            }
+
+        }
+
+        public IActionResult Login()
+        {
+            AccountPageResultViewModel model = new AccountPageResultViewModel();
+           
+            return View(model);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Login(AccountPageResultViewModel page)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _userAppService.Login(page.loginViewModel.Username, page.loginViewModel.Password);
+                if (!result.Succeeded)
+                {
+                    page.LoginMessage = "Username or password is incorrect";
+                    return View(page);
+                }
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                return View(page);
+            }
+
+        }
+
+
+
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RequestList(DateOnly date, CancellationToken cancellation, int? value = 0)
+        {
+          
             
             var request = new List<App.Domain.Core.Hw20.Request.Entities.Request>();
             if (value == 0)
@@ -61,30 +119,27 @@ namespace Hw20.Endpoints.Mvc.Controllers
             return View(request);
         }
 
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CarList(CancellationToken cancellation)
         {
-            if (CurrentUser.OnlineUser == null)
-                return RedirectToAction("Login");
+          
 
             var carModels = await _carModelAppService.GetAll(cancellation);
             return View(carModels);
         }
-
-        public async Task<IActionResult> AddCarList(string errorMessage = null , CancellationToken cancellation)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddCarList(CancellationToken cancellation , string errorMessage = null)
         {
-            if (CurrentUser.OnlineUser == null)
-                return RedirectToAction("Login");
+          
 
             ViewBag.errorMessage = errorMessage;
             var company = await _companyAppService.GetAll(cancellation);
             return View(company);
         }
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddCarModel(string name, string company , CancellationToken cancellation)
         {
-            if (CurrentUser.OnlineUser == null)
-                return RedirectToAction("Login");
+          
 
             var co = await _companyAppService.GetByName(company , cancellation);
             var carModel = new CarModel();
@@ -97,11 +152,10 @@ namespace Hw20.Endpoints.Mvc.Controllers
             }
             return RedirectToAction("CarList");
         }
-
-        public async Task<IActionResult> UpdateCarList(int id , string errorMessage = null , CancellationToken cancellation)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateCarList(int id , CancellationToken cancellation, string errorMessage = null)
         {
-            if (CurrentUser.OnlineUser == null)
-                return RedirectToAction("Login");
+           
 
             ViewBag.errorMessage = errorMessage;
             var carModel = await _carModelAppService.GetById(id , cancellation);
@@ -112,10 +166,11 @@ namespace Hw20.Endpoints.Mvc.Controllers
             return View(viewModel);
         }
 
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateCarModel(int id , string name , string company , CancellationToken cancellation)
         {
-            if (CurrentUser.OnlineUser == null)
-                return RedirectToAction("Login");
+          
 
             var co = await _companyAppService.GetByName(company , cancellation);
             var result = await _carModelAppService.Update(id, name, co , cancellation);
@@ -125,49 +180,36 @@ namespace Hw20.Endpoints.Mvc.Controllers
             }
             return RedirectToAction("CarList");
         }
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PreviewCarList(int id , CancellationToken cancellation)
         {
-            if (CurrentUser.OnlineUser == null)
-                return RedirectToAction("Login");
+           
 
             
             var carModel = await _carModelAppService.GetById(id , cancellation);
             return View(carModel);
         }
 
-        public async Task<IActionResult> LoginUser(string PhoneNumber, string NationalCode, CancellationToken cancellation)
-        {
-          var result = await _userAppService.Login(PhoneNumber, NationalCode , cancellation);
-            if (!result)
-            {
-                return RedirectToAction("Login", new { errorMessage = "User Is not Found." });
-            }
-            return RedirectToAction("Index" , "Home");
-        }
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AcceptRequest(int id , CancellationToken cancellation)
         {
-            if (CurrentUser.OnlineUser == null)
-                return RedirectToAction("Login");
+            
 
            await _requestAppService.AcceptRequest(id, cancellation);
             return RedirectToAction("RequestList");
         }
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RejectRequest(int id, CancellationToken cancellation)
         {
-            if (CurrentUser.OnlineUser == null)
-                return RedirectToAction("Login");
+            
 
            await _requestAppService.RejectRequest(id, cancellation);
             return RedirectToAction("RequestList");
         }
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteCarModel(int id, CancellationToken cancellation) 
         {
-            if (CurrentUser.OnlineUser == null)
-                return RedirectToAction("Login");
+           
 
            await _carModelAppService.Delete(id, cancellation);
             return RedirectToAction("CarList");

@@ -3,6 +3,7 @@
 @using Hw20.Endpoints.Mvc.Models.Request
 @model AddPageResultViewModel
 @inject ICarModelAppService car
+@inject CancellationToken cancellation
 
 <div class="container px-5 my-5">
     <form method="post" asp-controller="Request" asp-action="Add">
@@ -18,7 +19,7 @@
             <div class="form-floating mb-3">
                 <select class="form-control" asp-for="@Model.AddRequestViewModel.CarModel">
                     <option selected disabled value="">Please Select...</option>
-                    @foreach (var item in car.GetAll())
+                    @foreach (var item in await car.GetAll(cancellation))
                     {
                         <option>@item.Name</option>
                     }

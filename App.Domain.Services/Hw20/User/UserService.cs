@@ -1,5 +1,6 @@
 ﻿using App.Domain.Core.Hw20.User.Data;
 using App.Domain.Core.Hw20.User.Service;
+using Microsoft.AspNetCore.Identity;
 
 namespace App.Domain.Services.Hw20.User
 {
@@ -17,7 +18,7 @@ namespace App.Domain.Services.Hw20.User
             return await _userRepository.GetByNationalCode(nationalCode , cancellation);
         }
 
-        public async Task<bool> Login(string phoneNumber, string nationalCode , CancellationToken cancellationToken)
+        public async Task<IdentityResult> Login(string phoneNumber, string nationalCode , CancellationToken cancellationToken)
         {
            return await _userRepository.Login(phoneNumber, nationalCode , cancellationToken);
         }
